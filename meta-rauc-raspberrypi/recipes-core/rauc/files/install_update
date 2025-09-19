@@ -1,0 +1,20 @@
+#!/bin/bash
+echo Pionix Futech update installer v1.0
+
+if [ $1 == "--reboot" ]; then
+   sudo reboot '0 tryboot'
+fi
+
+if [ -f $1 ]; then
+   FN="${1%.*}.raucb"
+   mv $1 $FN 
+   if [ $2 == "--reboot-delete" ]; then
+     rauc install $FN && rm $1 && sudo reboot '0 tryboot'
+   else
+     rauc install $FN
+   fi
+   echo "Installation finished. Use $0 --reboot to reboot with the newly installed OS."
+   exit 0
+fi
+echo "File not found."
+exit 1

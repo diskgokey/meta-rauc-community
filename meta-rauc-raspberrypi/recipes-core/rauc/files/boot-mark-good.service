@@ -1,0 +1,20 @@
+[Unit]
+Description=Mark boot as good for rauc
+Before=read-only-root.service
+After=update-hostname.service
+After=systemd-logind.service
+After=rpi-eeprom-update.service
+After=ssh.service
+
+[Service]
+Type=oneshot
+#ExecStartPre=-mount -o remount,rw /boot
+ExecStartPre=-sh -c 'cp /boot/tryboot.txt /boot/config.txt 2>>/dev/null'
+ExecStartPre=-sh -c 'rm -f /boot/tryboot.txt'
+#ExecStartPre=-mount -o remount,ro /boot
+ExecStart=/bin/bash -c 'if modprobe dm-verity; then rauc status mark-good; fi'
+ExecStartPost=-systemctl disable boot-mark-good.service
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,5 +1,8 @@
-part /boot --source bootimg-partition --ondisk mmcblk0 --fstype=vfat --label boot --active --align 4096 --size 100
-part / --source rootfs --ondisk mmcblk0 --fstype=ext4 --label rootfs_A --align 4096
-part / --source rootfs --ondisk mmcblk0 --fstype=ext4 --label rootfs_B --align 4096
-part /data --fixed-size 100M --ondisk mmcblk0 --fstype=ext4 --label data --align 4096
-part /home --source rootfs --rootfs-dir=${IMAGE_ROOTFS}/home --ondisk mmcblk0 --fstype=ext4 --label homefs --align 1024 --size 500 --fsoptions "x-systemd.growfs"
+bootloader --ptable msdos
+part /boot --source bootimg-partition --ondisk mmcblk0 --fstype=vfat --label boot --active --align 4096 --fixed-size 512M
+part /boot_a --fstype=ext4 --label boot_a --align 4096 --size 512M
+part /boot_b --fstype=ext4 --label boot_b --align 4096 --size 512M
+part / --source rootfs --ondisk mmcblk0 --fstype=ext4 --label rootfs.0 --align 4096
+part / --source rootfs --ondisk mmcblk0 --fstype=ext4 --label rootfs.1 --align 4096
+part /factory_data --ondisk mmcblk0 --fstype=ext4 --label data_factory --align 4096 --size 64M --type=logical
+part /home --source rootfs --rootfs-dir=${IMAGE_ROOTFS}/home --ondisk mmcblk0 --fstype=ext4 --label data_user --align 4096 --size 1024M --fsoptions "x-systemd.growfs"
