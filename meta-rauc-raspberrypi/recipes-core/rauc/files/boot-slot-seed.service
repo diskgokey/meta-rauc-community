@@ -1,0 +1,17 @@
+# /etc/systemd/system/boot-slot-seed.service
+[Unit]
+Description=Seed /boot into empty boot_a/boot_b once
+After=local-fs.target
+Wants=local-fs.target
+RequiresMountsFor=/boot
+ConditionPathExists=!/var/lib/boot-slot-seed.done
+# Optional: only on first boot of a freshly flashed image
+# ConditionFirstBoot=yes
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/boot-slot-seed.sh
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target

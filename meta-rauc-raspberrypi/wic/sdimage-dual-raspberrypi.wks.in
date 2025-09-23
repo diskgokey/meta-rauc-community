@@ -1,7 +1,8 @@
 bootloader --ptable msdos
 part /boot --source bootimg-partition --ondisk mmcblk0 --fstype=vfat --label boot --active --align 4096 --fixed-size 512M
-part /boot_a --fstype=ext4 --label boot_a --align 4096 --size 512M
-part /boot_b --fstype=ext4 --label boot_b --align 4096 --size 512M
+part /boot_a --source empty --fstype=ext4 --label boot_a --align 4096 --size 512M
+part /boot_b --source empty --fstype=ext4 --label boot_b --align 4096 --size 512M
+#part reserved --source empty --align 4096 --size 16M
 part / --source rootfs --ondisk mmcblk0 --fstype=ext4 --label rootfs.0 --align 4096
 part / --source rootfs --ondisk mmcblk0 --fstype=ext4 --label rootfs.1 --align 4096
 part /factory_data --ondisk mmcblk0 --fstype=ext4 --label data_factory --align 4096 --size 64M --type=logical
