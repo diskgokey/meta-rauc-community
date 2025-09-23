@@ -1,28 +1,35 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
+
 SRC_URI:append := " \
-			file://futech-cert.pem \
-			file://rauc-init.service \
-			file://system.conf \
-			"
+    file://futech-cert.pem \
+    file://rauc-init.service \
+    file://system.conf \
+"
 
-# geef alleen de bestandsnaam door (geen pad!)
-RAUC_KEYRING_FILE = "futech-cert.pem"
-
+# optional, if your system.conf references the HWID
 do_install:prepend() {
-	sed -i "s/HWID/futechr1/g" ${WORKDIR}/system.conf
+    sed -i "s/HWID/futechr1/g" ${WORKDIR}/system.conf
 }
+
+inherit systemd
 
 SYSTEMD_PACKAGES = "${PN}"
 SYSTEMD_SERVICE:${PN} = "rauc-init.service"
 SYSTEMD_AUTO_ENABLE:${PN} = "enable"
 
 do_install() {
-    install -d ${D}${systemd_unitdir}/system
-    install -m 0644 ${WORKDIR}/rauc-init.service ${D}${systemd_unitdir}/system/
-	install -d ${D}${sysconfdir}/rauc
-    install -m 0755 ${WORKDIR}/futech-cert.pem ${D}${sysconfdir}/rauc
-	install -m 0755 ${WORKDIR}/system.conf ${D}${sysconfdir}/rauc
+    install -d ${D}${systemd_system_unitdir} ${D}${sysconfdir}/rauc
+    install -m 0644 ${WORKDIR}/rauc-init.service ${D}${systemd_system_unitdir}/
+
+    # config files (0644)
+    install -m 0644 ${WORKDIR}/futech-cert.pem ${D}${sysconfdir}/rauc/
+    install -m 0644 ${WORKDIR}/system.conf     ${D}${sysconfdir}/rauc/
 }
 
-FILES:${PN} += "${systemd_unitdir}/system/rauc-init.service"
+FILES:${PN} += " \
+    ${systemd_system_unitdir}/rauc-init.service \
+    ${sysconfdir}/rauc/futech-cert.pem \
+    ${sysconfdir}/rauc/system.conf \
+"
+
 RDEPENDS:${PN} += "rauc"
