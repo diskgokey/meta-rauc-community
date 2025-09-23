@@ -12,6 +12,10 @@ do_install:prepend() {
 	sed -i "s/HWID/futechr1/g" ${WORKDIR}/system.conf
 }
 
+SYSTEMD_PACKAGES = "${PN}"
+SYSTEMD_SERVICE:${PN} = "rauc-init.service"
+SYSTEMD_AUTO_ENABLE:${PN} = "enable"
+
 do_install() {
     install -d ${D}${systemd_unitdir}/system
     install -m 0644 ${WORKDIR}/rauc-init.service ${D}${systemd_unitdir}/system/
@@ -19,10 +23,6 @@ do_install() {
     install -m 0755 ${WORKDIR}/futech-cert.pem ${D}${sysconfdir}/rauc
 	install -m 0755 ${WORKDIR}/system.conf ${D}${sysconfdir}/rauc
 }
-
-SYSTEMD_PACKAGES = "${PN}"
-SYSTEMD_SERVICE:${PN} = "rauc-init.service"
-SYSTEMD_AUTO_ENABLE:${PN} = "enable"
 
 FILES:${PN} += "${systemd_unitdir}/system/rauc-init.service"
 RDEPENDS:${PN} += "rauc"
