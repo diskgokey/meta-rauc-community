@@ -47,10 +47,10 @@ with_temp_mount_rw() {
 resolve_dev() {
   slot="$1"
   for d in "/dev/disk/by-partlabel/$slot" \
-           "/dev/mmcblk0p2" "/dev/mmcblk0p3"; do
+           "/dev/mmcblk0p7" "/dev/mmcblk0p8"; do
     case "$slot:$d" in
-      boot_a:/dev/mmcblk0p3) continue ;;
-      boot_b:/dev/mmcblk0p2) continue ;;
+      boot_a:/dev/mmcblk0p7) continue ;;
+      boot_b:/dev/mmcblk0p8) continue ;;
     esac
     [ -e "$d" ] && { echo "$d"; return 0; }
   done
